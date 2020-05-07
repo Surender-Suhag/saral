@@ -15,10 +15,21 @@ foreign key (keyword_id) references keywords
 
 -- component classes
 
-create table ComponentsClasses (
-id serial primary key,
-name varchar(100),
-parent_id int,
+create table component_nodes (
+	id varchar(10) primary key,
+	name varchar(100),
+	parent_id varchar(10),
+	foreign key (parent_id) references component_nodes(id)
 
-foreign key (parent_id) references ComponentsClasses(id)
-)
+);
+
+create table components (
+	id varchar(10) primary key,
+	name varchar(100),
+	description varchar(1024),
+	node varchar(10) references component_nodes(id)
+);
+
+ -- Seauences
+ create sequence node_sequence start 1;
+ create sequence component_sequence start 1;

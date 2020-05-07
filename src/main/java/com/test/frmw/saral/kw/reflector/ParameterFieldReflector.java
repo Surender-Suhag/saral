@@ -1,7 +1,8 @@
 package com.test.frmw.saral.kw.reflector;
 
-import com.test.frmw.saral.kw.parameters.Param;
+import com.test.frmw.saral.annotations.Param;
 import com.test.frmw.saral.kw.parameters.ParameterDefinition;
+import com.test.frmw.saral.util.StringUtil;
 
 import java.lang.reflect.Field;
 
@@ -18,12 +19,10 @@ public class ParameterFieldReflector {
 
         parameterDefinition.setParamName(parameterField.getName());
         parameterDefinition.setParameterType(parameterField.getType());
-        parameterDefinition.setFriendlyName(getDefaultOrAnnotatedValue(parameterAnnotation.name(), parameterField.getName()));
-        parameterDefinition.setDescription(getDefaultOrAnnotatedValue(parameterAnnotation.description(), parameterField.getName()));
+        parameterDefinition.setFriendlyName(StringUtil.getNonEmptyValue(parameterAnnotation.name(), parameterField.getName()));
+        parameterDefinition.setDescription(StringUtil.getNonEmptyValue(parameterAnnotation.description(), parameterField.getName()));
         return parameterDefinition;
     }
 
-    private String getDefaultOrAnnotatedValue(String annotatedValue, String defaultValue) {
-        return (annotatedValue == null || annotatedValue.isEmpty()) ? defaultValue : annotatedValue;
-    }
+
 }

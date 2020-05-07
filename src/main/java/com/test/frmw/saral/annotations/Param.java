@@ -1,4 +1,4 @@
-package com.test.frmw.saral.kw.parameters;
+package com.test.frmw.saral.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

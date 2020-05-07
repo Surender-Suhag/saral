@@ -6,6 +6,7 @@ import com.test.frmw.saral.kw.AutomationKeyword;
 import com.test.frmw.saral.kw.KeywordDefinition;
 import com.test.frmw.saral.kw.reflector.KeywordClassReflector;
 import com.test.frmw.saral.kw.scanner.ClassPathScanner;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class LoadedKeywordsRegistry implements KeywordRegistry {
     @Autowired
     private SetMoreKwDefinitionValues setMoreKwDefinitionValues;
 
+    @Autowired
+    private Reflections reflections;
     //Todo  change list to map
     private List<KeywordDefinition> loadedKeywordDefinitions;
 
@@ -47,12 +50,15 @@ public class LoadedKeywordsRegistry implements KeywordRegistry {
     private void loadKeywords() {
 
         //Get  classes implementing AutomationKeyword interface
-        Set<Class> loadedKeywords = cpScanner.getClasses();
+//        Set<Class> loadedKeywords = cpScanner.getClasses();
+        Set<Class<? extends AutomationKeyword>> loadedKeywords = reflections.getSubTypesOf(AutomationKeyword.class);
 
-        logger.info("Parsing classes for keyword definitions and parameters");
+        if(logger.isDebugEnabled())
+             logger.info("Parsing classes for keyword definitions and parameters");
 
         loadedKeywordDefinitions = loadedKeywords.stream().filter(
                 kwClass -> !(Modifier.isAbstract(kwClass.getModifiers()) || Modifier.isInterface(kwClass.getModifiers()))).
+
                 //Create keyword definition for all implementing classes
                         map(kwClass -> {
                     try {

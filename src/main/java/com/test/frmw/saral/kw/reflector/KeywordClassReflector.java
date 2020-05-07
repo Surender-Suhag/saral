@@ -1,12 +1,13 @@
 package com.test.frmw.saral.kw.reflector;
 
+import com.test.frmw.saral.annotations.FrameworkKeyword;
+import com.test.frmw.saral.annotations.Param;
 import com.test.frmw.saral.exceptions.ClassNotOfAutomationKeywordTypeException;
 import com.test.frmw.saral.exceptions.DuplicateParameterException;
 import com.test.frmw.saral.kw.AutomationKeyword;
-import com.test.frmw.saral.kw.KeywordAnnotation;
 import com.test.frmw.saral.kw.KeywordDefinition;
-import com.test.frmw.saral.kw.parameters.Param;
 import com.test.frmw.saral.kw.parameters.ParameterDefinition;
+import com.test.frmw.saral.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,22 +17,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-
+/**
+ * KeywordClassReflector is used to reflect on the automation keyword class to generate Keyword Definition class
+ */
 public class KeywordClassReflector {
 
     private static final Logger logger = LoggerFactory.getLogger(KeywordClassReflector.class);
-    private final Class targetClassType = AutomationKeyword.class;
-    private Param parameterAnnotation;
 
     private Class<AutomationKeyword> clazz;
-    private KeywordAnnotation annotation;
+    private FrameworkKeyword annotation;
 
-    public KeywordClassReflector(Class<?> classToProcess) {
-        if (!targetClassType.isAssignableFrom(classToProcess))
-            throw new ClassNotOfAutomationKeywordTypeException(classToProcess.getName() + " is not of type -- " + targetClassType.getName());
-
+    public KeywordClassReflector(final Class<? extends AutomationKeyword> classToProcess) {
         this.clazz = (Class<AutomationKeyword>) classToProcess;
-        this.annotation = clazz.getAnnotation(KeywordAnnotation.class);
+        this.annotation = clazz.getAnnotation(FrameworkKeyword.class);
     }
 
     private String getKeywordName() {
@@ -39,7 +37,7 @@ public class KeywordClassReflector {
 
         return annotation == null ?
                 className :
-                getDefaultOrAnnotatedValue(annotation.name(), className);
+                StringUtil.getNonEmptyValue(annotation.name(), className);
     }
 
     private String getKeywordDescription() {
@@ -47,7 +45,7 @@ public class KeywordClassReflector {
 
         return annotation == null ?
                 className :
-                getDefaultOrAnnotatedValue(annotation.description(), className);
+                StringUtil.getNonEmptyValue(annotation.description(), className);
     }
 
     private Field[] getParamAnnotatedFields() {
@@ -74,11 +72,6 @@ public class KeywordClassReflector {
 
         return parameters;
 
-//        return Arrays.stream(getParamAnnotatedFields()).map(field -> {
-//            ParameterFieldReflector fieldReflector = new ParameterFieldReflector(field);
-//            return fieldReflector.getParameterDefinition();
-//        }).collect(Collectors.toSet());
-
 
     }
 
@@ -96,7 +89,4 @@ public class KeywordClassReflector {
     }
 
 
-    private String getDefaultOrAnnotatedValue(String annotatedValue, String defaultValue) {
-        return (annotatedValue == null || annotatedValue.isEmpty()) ? defaultValue : annotatedValue;
-    }
 }
