@@ -48,8 +48,7 @@ public class ComponentNodesServices {
 
 
         ComponentNodeDetails parentNode = optionalParentNode.get();
-        System.out.println(parentNode.getChildNodes());
-        System.out.println(nodeDetails);
+
        if(CollectionUtil.ifNamedEntityAlreadyExists(parentNode.getChildNodes(),nodeDetails))
            throw new EntityAlreadyExistsException(
                    String.format("Entity with name {%s} already exists for parent with ID {%s}",nodeDetails.getName(),parentNode.getId()));
