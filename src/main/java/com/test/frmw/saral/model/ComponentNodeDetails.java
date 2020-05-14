@@ -1,6 +1,7 @@
 package com.test.frmw.saral.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.frmw.saral.dao.TestComponentUniqueIdGenerator;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name="component_nodes")
-public class ComponentNodeDetails {
+public class ComponentNodeDetails implements EntityWithName {
 
     @Id
     @GenericGenerator(name = "node_sequence",
@@ -28,7 +29,7 @@ public class ComponentNodeDetails {
     @Column(name="name")
     private String name;
 
-
+    @JsonProperty("childFolders")
     @OneToMany(mappedBy = "parentNode",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<ComponentNodeDetails> childNodes;
 
@@ -37,6 +38,7 @@ public class ComponentNodeDetails {
     @JsonBackReference
     private ComponentNodeDetails parentNode;
 
+    @JsonProperty("childFiles")
     @OneToMany(mappedBy = "parentComponentNodeDetails",cascade = CascadeType.ALL)
     private List<ComponentDetails> childComponentsDetails;
 
@@ -72,6 +74,7 @@ public class ComponentNodeDetails {
     public void addChildComponentNodeDetails(ComponentNodeDetails childNode){
         if(this.childNodes == null)
             this.childNodes = new ArrayList<>();
+
         this.childNodes.add(childNode);
     }
     public void setParentNode(ComponentNodeDetails parentNode) {

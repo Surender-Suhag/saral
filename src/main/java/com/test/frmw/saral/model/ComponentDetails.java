@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="components")
-public class ComponentDetails {
+public class ComponentDetails implements EntityWithName {
     @Id
     @Column(name ="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "component_sequence")
